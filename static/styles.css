@@ -1,0 +1,25 @@
+body {
+  font-family: system-ui, sans-serif;
+  background: #0f172a;
+  color: #e5e7eb;
+  padding: 40px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 40px;
+}
+
+canvas {
+  width: 100% !important;
+  max-width: 600px;
+  height: 400px !important;
+  margin: auto;
+  display: block;
+}

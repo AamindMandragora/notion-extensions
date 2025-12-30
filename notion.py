@@ -84,10 +84,10 @@ def fetch_tasks(person: str, filter_name: str | None = None):
 
     return tasks
 
-
-if __name__ == "__main__":
+def winter_break_tasks():
     aashima_tasks = fetch_tasks("aashima", "winter_break")
     adi_tasks = fetch_tasks("adi", "winter_break")
+    return [aashima_tasks, adi_tasks]
 
-    print(len(aashima_tasks))
-    print(len(adi_tasks))
+if __name__ == "__main__":
+    print(winter_break_tasks())
