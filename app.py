@@ -10,7 +10,7 @@ import time
 app = Flask(__name__, static_folder="static")
 
 CACHE_FILE = "task_cache.json"
-CACHE_REFRESH_INTERVAL = 300  # refreshes every 5 min
+CACHE_REFRESH_INTERVAL = 300
 
 def aggregate_daily(person, tasks):
     """Return dict date -> count of tasks for given list of tasks"""

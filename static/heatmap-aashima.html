@@ -200,7 +200,6 @@
             const container = document.getElementById("grid-container");
             const tooltip = document.getElementById("tooltip");
 
-            // Split into two rows (half year each)
             const midPoint = Math.ceil(dates.length / 2);
             const segments = [dates.slice(0, midPoint), dates.slice(midPoint)];
 
@@ -283,7 +282,7 @@
             }
 
             window.addEventListener('resize', scaleToFit);
-            setTimeout(scaleToFit, 100); // Wait for render
+            setTimeout(scaleToFit, 100);
         });
     </script>
 </body>
