@@ -174,3 +174,9 @@
 .back-link:hover {
     color: #f3f4f6;
 }
+
+a {
+    font: inherit;
+    text-decoration: inherit;
+    color: inherit;
+}
