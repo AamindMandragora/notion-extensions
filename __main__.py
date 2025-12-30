@@ -7,24 +7,87 @@ load_dotenv()
 notion = Client(auth=os.getenv("INTEGRATION_SECRET"))
 
 TASK_DATABASES = {
-    "adi" : os.getenv("ADI_DATABASE"),
-    "aashima" : os.getenv("AASHIMA_DATABASE")
+    "adi": {
+        "db_id": os.getenv("ADI_DATABASE"),
+        "filters": {
+            "winter_break": {
+                "and": [
+                    {
+                        "property": "Task Type",
+                        "status": {"equals": "Done"},
+                    },
+                    {
+                        "property": "Scheduled Date",
+                        "date": {"after": "2025-12-16"},
+                    },
+                ]
+            }
+        },
+    },
+    "aashima": {
+        "db_id": os.getenv("AASHIMA_DATABASE"),
+        "filters": {
+            "winter_break": {
+                "and": [
+                    {
+                        "property": "status",
+                        "status": {"equals": "Done"},
+                    },
+                    {
+                        "or": [
+                            {
+                                "property": "date due",
+                                "date": {"after": "2025-12-16"},
+                            },
+                            {
+                                "property": "date estimated",
+                                "date": {"after": "2025-12-16"},
+                            },
+                        ]
+                    },
+                ]
+            }
+        },
+    },
 }
 
-def fetch_tasks(person: "adi" | "aashima"): # type: ignore
+
+def fetch_tasks(person: str, filter_name: str | None = None):
     tasks = []
-    db_id = TASK_DATABASES[person]
+
+    config = TASK_DATABASES[person]
+    db_id = config["db_id"]
+    filter_obj = (
+        config["filters"].get(filter_name) if filter_name else None
+    )
+
     database = notion.databases.retrieve(database_id=db_id)
-    for source_ref in database['data_sources']:
-        source = notion.data_sources.query(data_source_id=source_ref['id'])
-        while (source['next_cursor'] != None):
-            tasks += source['results']
-            source = notion.data_sources.query(data_source_id=source_ref['id'], start_cursor=source['next_cursor'])
-        tasks += source['results']
+
+    for source_ref in database["data_sources"]:
+        query_args = {
+            "data_source_id": source_ref["id"],
+        }
+
+        if filter_obj:
+            query_args["filter"] = filter_obj
+
+        source = notion.data_sources.query(**query_args)
+
+        while True:
+            tasks.extend(source["results"])
+
+            if not source["has_more"]:
+                break
+
+            query_args["start_cursor"] = source["next_cursor"]
+            source = notion.data_sources.query(**query_args)
+
     return tasks
 
+
 if __name__ == "__main__":
-    aashima_tasks = fetch_tasks("aashima")
-    adi_tasks = fetch_tasks("adi")
+    aashima_tasks = fetch_tasks("aashima", "winter_break")
+    adi_tasks = fetch_tasks("adi", "winter_break")
+
     print(len(aashima_tasks))
     print(len(adi_tasks))
