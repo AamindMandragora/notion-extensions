@@ -1,0 +1,176 @@
+.heatmap-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.person-section {
+    margin-bottom: 60px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 32px;
+}
+
+.person-section h2 {
+    margin-bottom: 24px;
+    font-size: 24px;
+    font-weight: 600;
+    color: #f3f4f6;
+}
+
+.heatmap-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 0px;
+}
+
+.heatmap-grid {
+    display: grid;
+    grid-template-rows: repeat(5, 12px);
+    grid-auto-flow: column;
+    gap: 2.5px;
+    padding: 3px;
+    width: fit-content;
+}
+
+.heatmap-cell {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    background-color: rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.heatmap-cell:hover {
+    outline: 2px solid rgba(255, 255, 255, 0.4);
+    transform: scale(1.2);
+    z-index: 10;
+}
+
+.heatmap-cell.adi-level-0 {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.heatmap-cell.adi-level-1 {
+    background-color: rgba(255, 255, 255, 0.25);
+}
+
+.heatmap-cell.adi-level-2 {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.heatmap-cell.adi-level-3 {
+    background-color: rgba(255, 255, 255, 0.75);
+}
+
+.heatmap-cell.adi-level-4 {
+    background-color: rgba(255, 255, 255, 0.95);
+}
+
+.heatmap-cell.aashima-level-0 {
+    background-color: rgba(255, 77, 77, 0.05);
+}
+
+.heatmap-cell.aashima-level-1 {
+    background-color: rgba(255, 77, 77, 0.3);
+}
+
+.heatmap-cell.aashima-level-2 {
+    background-color: rgba(255, 77, 77, 0.55);
+}
+
+.heatmap-cell.aashima-level-3 {
+    background-color: rgba(255, 77, 77, 0.8);
+}
+
+.heatmap-cell.aashima-level-4 {
+    background-color: rgba(255, 77, 77, 1);
+}
+
+.month-labels {
+    font-size: 11px;
+    color: #9ca3af;
+    overflow: visible;
+    white-space: nowrap;
+    margin-top: 20px;
+    height: 20px;
+    padding-left: 3px;
+}
+
+.month-label {
+    display: inline-block;
+    white-space: nowrap;
+    height: 20px;
+}
+
+.day-labels {
+    display: grid;
+    grid-template-rows: repeat(7, 14px);
+    gap: 3px;
+    margin-right: 8px;
+    font-size: 11px;
+    color: #9ca3af;
+    text-align: right;
+    padding-right: 8px;
+}
+
+.heatmap-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0;
+    overflow-x: auto;
+}
+
+.tooltip {
+    position: fixed;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    pointer-events: none;
+    z-index: 1000;
+    display: none;
+    white-space: nowrap;
+}
+
+.stats {
+    display: flex;
+    gap: 32px;
+    margin-top: 16px;
+    font-size: 14px;
+    color: #d1d5db;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: #9ca3af;
+}
+
+.stat-value {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 24px;
+    color: #9ca3af;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s;
+}
+
+.back-link:hover {
+    color: #f3f4f6;
+}
