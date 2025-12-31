@@ -21,6 +21,10 @@ TASK_DATABASES = {
                         "date": {"after": "2025-12-16"},
                     },
                 ]
+            },
+            "completed": {
+                "property": "Task Type",
+                "status": {"equals": "Done"},
             }
         },
     },
@@ -46,6 +50,10 @@ TASK_DATABASES = {
                         ]
                     },
                 ]
+            },
+            "completed": {
+                "property": "status",
+                "status": {"equals": "Done"},
             }
         },
     },

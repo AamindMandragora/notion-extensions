@@ -1,3 +1,4 @@
 python-dotenv==1.2.1
 notion-client==2.7.0
 flask==3.1.2
+redis==7.1.0

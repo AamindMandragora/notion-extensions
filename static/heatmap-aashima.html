@@ -4,287 +4,37 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aashima's Activity Heatmap</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap');
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html,
-        body {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background: #191919;
-        }
-
-        body {
-            font-family: 'PT Serif', serif;
-            color: #e5e7eb;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .widget-container {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 12px;
-        }
-
-        .scaling-wrapper {
-            transition: transform 0.2s ease-out;
-            transform-origin: center center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .person-section {
-            background: rgba(255, 77, 77, 0.03);
-            border: 1px solid rgba(255, 77, 77, 0.08);
-            border-radius: 12px;
-            padding: 24px;
-            width: fit-content;
-            min-width: 320px;
-        }
-
-        h2 {
-            font-size: 18px;
-            margin-bottom: 16px;
-            color: #f3f4f6;
-            text-align: center;
-        }
-
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 20px;
-            gap: 24px;
-        }
-
-        .stat-item {
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .stat-label {
-            color: #9ca3af;
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .stat-value {
-            font-weight: 600;
-            font-size: 18px;
-        }
-
-        .heatmap-wrap-container {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            align-items: center;
-        }
-
-        .heatmap-grid {
-            display: grid;
-            grid-template-rows: repeat(5, 12px);
-            grid-auto-flow: column;
-            gap: 3px;
-            width: fit-content;
-        }
-
-        .heatmap-cell {
-            width: 12px;
-            height: 12px;
-            border-radius: 2px;
-            background-color: rgba(255, 77, 77, 0.05);
-            transition: all 0.2s ease;
-        }
-
-        .heatmap-cell:hover {
-            transform: scale(1.4);
-            z-index: 10;
-            outline: 1.5px solid #ff4d4d;
-        }
-
-        .level-0 {
-            background-color: rgba(255, 77, 77, 0.05);
-        }
-
-        .level-1 {
-            background-color: rgba(255, 77, 77, 0.3);
-        }
-
-        .level-2 {
-            background-color: rgba(255, 77, 77, 0.55);
-        }
-
-        .level-3 {
-            background-color: rgba(255, 77, 77, 0.8);
-        }
-
-        .level-4 {
-            background-color: rgba(255, 77, 77, 1);
-        }
-
-        .month-labels {
-            font-size: 9px;
-            color: #9ca3af;
-            overflow: visible;
-            white-space: nowrap;
-            margin-bottom: 4px;
-            height: 14px;
-            width: 100%;
-            display: flex;
-            position: relative;
-        }
-
-        .month-label {
-            position: absolute;
-            white-space: nowrap;
-        }
-
-        .tooltip {
-            position: fixed;
-            background: rgba(0, 0, 0, 0.95);
-            color: white;
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-size: 11px;
-            pointer-events: none;
-            display: none;
-            white-space: nowrap;
-            z-index: 1000;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-    </style>
+    <link rel="stylesheet" href="/static/styles.css" />
+    <link rel="stylesheet" href="/static/heatmap.css" />
 </head>
 
 <body>
-    <div class="widget-container">
-        <div class="scaling-wrapper" id="scaler">
-            <div class="person-section" id="content">
-                <h2>Aashima's Activity</h2>
-                <div class="stats" id="stats"></div>
-                <div class="heatmap-wrap-container" id="grid-container"></div>
+    <div class="person-section" id="aashima-section">
+        <a href="heatmap-aashima.html">
+            <h2>Aashima's Activity</h2>
+            <div class="stats" id="aashima-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Total Tasks</span>
+                    <span class="stat-value"></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Daily Average</span>
+                    <span class="stat-value"></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Best Day</span>
+                    <span class="stat-value"></span>
+                </div>
             </div>
-        </div>
+            <div class="heatmap-content" id="aashima-heatmap-container">
+                <div class="month-labels" id="aashima-months"></div>
+                <div class="heatmap-wrapper">
+                    <div class="heatmap-grid" id="aashima-heatmap"></div>
+                </div>
+            </div>
+        </a>
     </div>
     <div class="tooltip" id="tooltip"></div>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", async () => {
-            const res = await fetch("/api/heatmap");
-            const data = await res.json();
-            const dates = data.dates;
-            const ashMax = Math.max(...dates.map(d => d.aashima));
-            const ashTotal = dates.reduce((sum, d) => sum + d.aashima, 0);
-
-            document.getElementById("stats").innerHTML = `
-                <div class="stat-item"><span class="stat-label">Total</span><span class="stat-value">${ashTotal}</span></div>
-                <div class="stat-item"><span class="stat-label">Avg</span><span class="stat-value">${(ashTotal / dates.length).toFixed(1)}</span></div>
-                <div class="stat-item"><span class="stat-label">Peak</span><span class="stat-value">${ashMax}</span></div>
-            `;
-
-            const container = document.getElementById("grid-container");
-            const tooltip = document.getElementById("tooltip");
-
-            const midPoint = Math.ceil(dates.length / 2);
-            const segments = [dates.slice(0, midPoint), dates.slice(midPoint)];
-
-            segments.forEach((chunk, segIdx) => {
-                const segmentWrapper = document.createElement("div");
-                segmentWrapper.style.display = "flex";
-                segmentWrapper.style.flexDirection = "column";
-                segmentWrapper.style.alignItems = "flex-start";
-
-                const monthLabels = document.createElement("div");
-                monthLabels.className = "month-labels";
-                segmentWrapper.appendChild(monthLabels);
-
-                const grid = document.createElement("div");
-                grid.className = "heatmap-grid";
-                chunk.forEach(d => {
-                    const cell = document.createElement("div");
-                    const level = d.aashima === 0 ? 0 : Math.min(4, Math.floor(4 * Math.sqrt(d.aashima / ashMax)));
-                    cell.className = `heatmap-cell level-${level}`;
-
-                    cell.addEventListener("mouseenter", (e) => {
-                        const dateStr = new Date(d.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
-                        tooltip.textContent = `${dateStr}: ${d.aashima} task${d.aashima !== 1 ? 's' : ''}`;
-                        tooltip.style.display = "block";
-                        updateTooltip(e);
-                    });
-                    cell.addEventListener("mousemove", updateTooltip);
-                    cell.addEventListener("mouseleave", () => tooltip.style.display = "none");
-                    grid.appendChild(cell);
-                });
-                segmentWrapper.appendChild(grid);
-                container.appendChild(segmentWrapper);
-
-                generateMonthLabels(monthLabels, chunk);
-            });
-
-            function updateTooltip(e) {
-                tooltip.style.left = (e.clientX + 12) + "px";
-                tooltip.style.top = (e.clientY + 12) + "px";
-            }
-
-            function generateMonthLabels(container, chunk) {
-                if (!chunk.length) return;
-
-                const startDate = new Date(chunk[0].date);
-                startDate.setHours(0, 0, 0, 0);
-
-                const ROWS = 5;
-                const cellWidth = 12;
-                const gap = 3;
-                const columnWidth = cellWidth + gap;
-
-                chunk.forEach((d, idx) => {
-                    const date = new Date(d.date);
-                    if (date.getDate() !== 1) return;
-
-                    const colIndex = Math.floor(idx / ROWS);
-                    const monthText = date.toLocaleDateString('en-US', { month: 'short' });
-
-                    const label = document.createElement("span");
-                    label.className = "month-label";
-                    label.textContent = monthText;
-                    label.style.left = `${colIndex * columnWidth}px`;
-                    container.appendChild(label);
-                });
-            }
-
-            // Auto-scaling logic
-            const scaler = document.getElementById("scaler");
-            const content = document.getElementById("content");
-
-            function scaleToFit() {
-                const winW = window.innerWidth - 40;
-                const winH = window.innerHeight - 40;
-                const contentW = content.offsetWidth;
-                const contentH = content.offsetHeight;
-
-                const scale = Math.min(winW / contentW, winH / contentH, 1);
-                scaler.style.transform = `scale(${scale})`;
-            }
-
-            window.addEventListener('resize', scaleToFit);
-            setTimeout(scaleToFit, 100);
-        });
-    </script>
+    <script type="module" src="/static/heatmap-aashima.js"></script>
 </body>
-
 </html>
