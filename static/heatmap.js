@@ -84,8 +84,6 @@ export async function renderHeatmap({ person, dates, containerId, statsId, toolt
         return ctx.measureText(text).width;
     }
 
-    // ------------------------
-    // Month labels for split segments using same padding logic as normal
     function generateMonthLabelsForSegment(container, dates) {
         container.innerHTML = '';
         if (!dates.length) return;
@@ -132,21 +130,5 @@ export async function renderHeatmap({ person, dates, containerId, statsId, toolt
             prevCol = colIndex;
             prevTextWidth = textWidth;
         });
-
-        container.style.width = 'fit-content';
-    }
-
-    // ------------------------
-    // Responsive columns
-    function adjustHeatmapColumns(container) {
-        const aspect = window.innerWidth / window.innerHeight;
-        const segmentWrappers = container.querySelectorAll('.segment-wrapper');
-        if (aspect >= 1.7 && aspect <= 1.9) {
-            // roughly 16:9 → two columns
-            segmentWrappers.forEach(seg => seg.style.flex = '1 1 45%');
-        } else {
-            // otherwise → one column
-            segmentWrappers.forEach(seg => seg.style.flex = '1 1 100%');
-        }
     }
 }

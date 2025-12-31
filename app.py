@@ -2,6 +2,8 @@ from flask import Flask, jsonify, send_from_directory
 from notion import fetch_tasks
 from collections import defaultdict
 from datetime import datetime, timedelta, timezone
+from threading import Thread
+import time
 import redis
 import json
 import os
@@ -9,6 +11,7 @@ import os
 app = Flask(__name__, static_folder="static")
 
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+LATENCY = 60000
 
 redis_client = redis.from_url(REDIS_URL, decode_responses=True)
 
@@ -99,7 +102,6 @@ def get_cached(key):
         return json.loads(cached)
     return None
 
-
 def set_cached(key, value):
     redis_client.set(key, json.dumps(value))
 
@@ -129,5 +131,15 @@ def heatmap():
     set_cached("heatmap", data["heatmap"])
     return jsonify(data["heatmap"])
 
+def recache():
+    while True:
+        print("Rebuilding the cache!")
+        data = build_cache_payload()
+        set_cached("winter_break", data["winter_break"])
+        set_cached("heatmap", data["heatmap"])
+        time.sleep(LATENCY)
+
 if __name__ == "__main__":
+    rc = Thread(target=recache)
+    rc.start()
     app.run(debug=True)
