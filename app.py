@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify, send_from_directory
 from notion import *
 from datetime import datetime, timedelta
-from threading import Thread
 import time
 import redis
 import json
@@ -10,7 +9,6 @@ import os
 app = Flask(__name__, static_folder="static")
 
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
-LATENCY = 60
 
 redis_client = redis.from_url(REDIS_URL, decode_responses=True)
 
@@ -80,14 +78,6 @@ def get_cached(key):
 def set_cached(key, value):
     redis_client.set(key, json.dumps(value))
 
-def recache():
-    while True:
-        print("Rebuilding the cache!")
-        data = build_cache_payload()
-        set_cached("winter_break", data["winter_break"])
-        set_cached("heatmap", data["heatmap"])
-        time.sleep(LATENCY)
-
 @app.route("/")
 def index():
     return send_from_directory("static", "index.html")
@@ -118,10 +108,11 @@ def heatmap():
 def recieve_webhook():
     print("Someone edited the page!")
     print(request.get_json())
-    recache()
+    print("Rebuilding the cache!")
+    data = build_cache_payload()
+    set_cached("winter_break", data["winter_break"])
+    set_cached("heatmap", data["heatmap"])
     return "Successful redis update!", 200
 
 if __name__ == "__main__":
-    rc = Thread(target=recache)
-    rc.start()
     app.run(debug=True)
