@@ -10,7 +10,7 @@ body {
   font-family: 'PT Serif', serif;
   background: #191919;
   color: #e5e7eb;
-  padding: 40px 20px;
+  padding: 40px;
   min-height: 100vh;
 }
 
@@ -37,6 +37,7 @@ h1 {
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 .grid>div:hover {
@@ -45,21 +46,41 @@ h1 {
 
 .grid>div>a {
   text-decoration: inherit;
-  color: inherit;
+  color: #9ca3af;
   width: inherit;
   height: inherit;
 }
 
-iframe {
+.grid>div>iframe {
   width: 100%;
   height: auto;
   aspect-ratio: 4 / 3;
   border: none;
-  zoom: 0.80;
+  zoom: 1;
 }
 
-@media (min-width: 950px) {
+.chart-container {
+  width: inherit;
+  min-height: calc(100vh - 80px);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: stretch;
+}
+
+canvas {
+  width: inherit;
+  height: inherit;
+}
+
+@media (min-width: 1467px) {
   .grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+  .grid>div>iframe {
+    zoom: 0.65;
   }
 }

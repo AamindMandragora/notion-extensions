@@ -33,10 +33,6 @@ export async function renderHeatmap({ person, dates, containerId, statsId, toolt
         generateMonthLabelsForSegment(monthLabels, chunk);
     });
 
-    adjustHeatmapColumns(container);
-    window.addEventListener('resize', () => adjustHeatmapColumns(container));
-
-    // ------------------------
     function updateStats(containerId, values) {
         const el = document.getElementById(containerId);
         for (let i = 0; i < 3; i++) {
@@ -94,7 +90,7 @@ export async function renderHeatmap({ person, dates, containerId, statsId, toolt
         startDate.setHours(0, 0, 0, 0);
 
         const cellWidth = 12;
-        const gap = 2.5;
+        const gap = 3;
         const columnWidth = cellWidth + gap;
         const font = getComputedStyle(document.querySelector('.month-labels')).font;
 

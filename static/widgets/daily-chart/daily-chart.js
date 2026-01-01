@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   Chart.defaults.color = '#9ca3af';
   Chart.defaults.font.family = "'PT Serif', serif";
-  Chart.defaults.font.size = 13;
 
   new Chart(document.getElementById("dailyChart"), {
     type: "bar",
@@ -50,11 +49,11 @@ document.addEventListener("DOMContentLoaded", async () => {
           text: 'Daily Breakdown',
           font: {
             family: "'PT Serif', serif",
-            size: 18,
+            size: 24,
             weight: '600'
           },
           color: '#f3f4f6',
-          padding: { bottom: 24 }
+          padding: { top: 24, bottom: 24 }
         },
         legend: {
           display: true,
@@ -62,8 +61,8 @@ document.addEventListener("DOMContentLoaded", async () => {
           labels: {
             padding: 16,
             usePointStyle: true,
-            pointStyle: 'rect',
-            font: { size: 13 }
+            pointStyle: 'rectRounded',
+            font: { size: 16 }
           }
         },
         tooltip: {
@@ -71,7 +70,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           padding: 12,
           cornerRadius: 8,
           titleFont: { size: 14, weight: '600' },
-          bodyFont: { size: 13 }
+          bodyFont: { size: 16 }
         }
       },
       scales: {
@@ -82,7 +81,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           },
           ticks: {
             color: '#9ca3af',
-            font: { size: 12 }
+            font: { size: 14 }
           },
           border: {
             color: 'rgba(255, 255, 255, 0.1)'
@@ -97,7 +96,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           },
           ticks: {
             color: '#9ca3af',
-            font: { size: 12 },
+            font: { size: 14 },
             padding: 8,
             stepSize: 1
           },

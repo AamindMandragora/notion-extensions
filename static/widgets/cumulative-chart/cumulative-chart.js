@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   Chart.defaults.color = '#9ca3af';
   Chart.defaults.font.family = "'PT Serif', serif";
-  Chart.defaults.font.size = 13;
 
   new Chart(document.getElementById("cumulativeChart"), {
     type: "line",
@@ -58,11 +57,11 @@ document.addEventListener("DOMContentLoaded", async () => {
           text: 'Cumulative Progress',
           font: {
             family: "'PT Serif', serif",
-            size: 18,
+            size: 24,
             weight: '600'
           },
           color: '#f3f4f6',
-          padding: { bottom: 24 }
+          padding: { top: 24, bottom: 24 }
         },
         legend: {
           display: true,
@@ -71,15 +70,15 @@ document.addEventListener("DOMContentLoaded", async () => {
             padding: 16,
             usePointStyle: true,
             pointStyle: 'circle',
-            font: { size: 13 }
+            font: { size: 16 }
           }
         },
         tooltip: {
           backgroundColor: 'rgba(0, 0, 0, 0.8)',
           padding: 12,
           cornerRadius: 8,
-          titleFont: { size: 14, weight: '600' },
-          bodyFont: { size: 13 }
+          titleFont: { size: 16, weight: '600' },
+          bodyFont: { size: 16 }
         }
       },
       scales: {
