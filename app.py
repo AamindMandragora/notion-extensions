@@ -1,7 +1,6 @@
 from flask import Flask, jsonify, send_from_directory
-from notion import fetch_tasks
-from collections import defaultdict
-from datetime import datetime, timedelta, timezone
+from notion import *
+from datetime import datetime, timedelta
 from threading import Thread
 import time
 import redis
@@ -14,29 +13,6 @@ REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 LATENCY = 60000
 
 redis_client = redis.from_url(REDIS_URL, decode_responses=True)
-
-def parse_notion_date(date_str):
-    dt = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
-    return dt.astimezone(timezone.utc).date().isoformat()
-
-def aggregate_daily(person, tasks):
-    daily_counts = defaultdict(int)
-
-    for task in tasks:
-        try:
-            if person == "adi":
-                date_str = task["properties"]["Scheduled Date"]["date"]["start"]
-            else:
-                date_obj = task["properties"]["date estimated"]["date"] \
-                           or task["properties"]["date due"]["date"]
-                date_str = date_obj["start"]
-
-            date = parse_notion_date(date_str)
-            daily_counts[date] += 1
-        except (KeyError, TypeError):
-            continue
-
-    return daily_counts
 
 def build_cache_payload():
     adi_all = fetch_tasks("adi", "completed")
@@ -95,7 +71,6 @@ def build_cache_payload():
         "last_updated": datetime.now().isoformat()
     }
 
-
 def get_cached(key):
     cached = redis_client.get(key)
     if cached:
@@ -104,6 +79,14 @@ def get_cached(key):
 
 def set_cached(key, value):
     redis_client.set(key, json.dumps(value))
+
+def recache():
+    while True:
+        print("Rebuilding the cache!")
+        data = build_cache_payload()
+        set_cached("winter_break", data["winter_break"])
+        set_cached("heatmap", data["heatmap"])
+        time.sleep(LATENCY)
 
 @app.route("/")
 def index():
@@ -130,14 +113,6 @@ def heatmap():
     set_cached("winter_break", data["winter_break"])
     set_cached("heatmap", data["heatmap"])
     return jsonify(data["heatmap"])
-
-def recache():
-    while True:
-        print("Rebuilding the cache!")
-        data = build_cache_payload()
-        set_cached("winter_break", data["winter_break"])
-        set_cached("heatmap", data["heatmap"])
-        time.sleep(LATENCY)
 
 if __name__ == "__main__":
     rc = Thread(target=recache)

@@ -5,26 +5,17 @@
   <meta charset="UTF-8" />
   <title>Winter Break Competition</title>
   <link rel="stylesheet" href="/static/styles.css" />
-
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 
 <body>
   <h1>Winter Break Task Competition</h1>
-
-  <div style="text-align: center; margin-bottom: 32px;">
-    <a href="/static/heatmap.html"
-      style="color: #9ca3af; text-decoration: none; font-size: 14px; transition: color 0.2s;">
-      View Year in Review Heatmap →
-    </a>
-  </div>
-
   <div class="grid">
-    <div><a href="/static/cumulative-chart.html"><canvas id="cumulativeChart"></canvas></a></div>
-    <div><a href="/static/daily-chart.html"><canvas id="dailyChart"></canvas></a></div>
+    <div><a href="/static/widgets/cumulative-chart/cumulative-chart.html"><iframe src="/static/widgets/cumulative-chart/cumulative-chart.html"></iframe></a></div>
+    <div><a href="/static/widgets/daily-chart/daily-chart.html"><iframe src="/static/widgets/daily-chart/daily-chart.html"></iframe></a></div>
+    <div><a href="/static/widgets/heatmap/heatmap-adi/heatmap-adi.html"><iframe src="/static/widgets/heatmap/heatmap-adi/heatmap-adi.html"></iframe></a></div>
+    <div><a href="/static/widgets/heatmap/heatmap-aashima/heatmap-aashima.html"><iframe src="/static/widgets/heatmap/heatmap-aashima/heatmap-aashima.html"></iframe></a></div>
   </div>
-
-  <script src="/static/script.js"></script>
 </body>
 
 </html>

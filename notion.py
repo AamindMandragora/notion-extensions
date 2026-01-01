@@ -1,6 +1,8 @@
 import os
 from dotenv import load_dotenv
 from notion_client import Client
+from collections import defaultdict
+from datetime import datetime, timezone
 
 load_dotenv()
 
@@ -59,6 +61,28 @@ TASK_DATABASES = {
     },
 }
 
+def parse_notion_date(date_str):
+    dt = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
+    return dt.astimezone(timezone.utc).date().isoformat()
+
+def aggregate_daily(person, tasks):
+    daily_counts = defaultdict(int)
+
+    for task in tasks:
+        try:
+            if person == "adi":
+                date_str = task["properties"]["Scheduled Date"]["date"]["start"]
+            else:
+                date_obj = task["properties"]["date estimated"]["date"] \
+                           or task["properties"]["date due"]["date"]
+                date_str = date_obj["start"]
+
+            date = parse_notion_date(date_str)
+            daily_counts[date] += 1
+        except (KeyError, TypeError):
+            continue
+
+    return daily_counts
 
 def fetch_tasks(person: str, filter_name: str | None = None):
     tasks = []

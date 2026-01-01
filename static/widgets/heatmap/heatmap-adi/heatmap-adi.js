@@ -1,4 +1,4 @@
-import { renderHeatmap } from './heatmap.js';
+import { renderHeatmap } from '../heatmap.js';
 
 document.addEventListener("DOMContentLoaded", async () => {
     const tooltip = document.getElementById("tooltip");
@@ -11,10 +11,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         const dates = data.dates;
 
         renderHeatmap({
-            person: 'aashima',
+            person: 'adi',
             dates,
-            containerId: 'aashima-heatmap-container',
-            statsId: 'aashima-stats',
+            containerId: 'adi-heatmap-container',
+            statsId: 'adi-stats',
             tooltip
         });
 
