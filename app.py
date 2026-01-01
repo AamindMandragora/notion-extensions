@@ -114,6 +114,12 @@ def heatmap():
     set_cached("heatmap", data["heatmap"])
     return jsonify(data["heatmap"])
 
+@app.route("/notion-webhook", methods=["POST"])
+def recieve_webhook():
+    print("Someone edited the page!")
+    recache()
+    return "Successful redis update!", 200
+
 if __name__ == "__main__":
     rc = Thread(target=recache)
     rc.start()

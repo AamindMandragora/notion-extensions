@@ -76,7 +76,7 @@ canvas {
   height: inherit;
 }
 
-@media (min-width: 1467px) {
+@media (min-aspect-ratio: 4/3) {
   .grid {
     grid-template-columns: repeat(2, 1fr);
   }
