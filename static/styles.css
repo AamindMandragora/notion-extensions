@@ -56,7 +56,7 @@ h1 {
   height: auto;
   aspect-ratio: 4 / 3;
   border: none;
-  zoom: 1;
+  zoom: 0.8;
 }
 
 .chart-container {
@@ -81,6 +81,6 @@ canvas {
     grid-template-columns: repeat(2, 1fr);
   }
   .grid>div>iframe {
-    zoom: 0.65;
+    zoom: 0.47;
   }
 }
