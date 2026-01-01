@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory
 from notion import *
 from datetime import datetime, timedelta
 from threading import Thread
@@ -117,6 +117,7 @@ def heatmap():
 @app.route("/notion-webhook", methods=["POST"])
 def recieve_webhook():
     print("Someone edited the page!")
+    print(request.get_json())
     recache()
     return "Successful redis update!", 200
 
