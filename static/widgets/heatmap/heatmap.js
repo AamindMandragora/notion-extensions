@@ -85,46 +85,23 @@ export async function renderHeatmap({ person, dates, containerId, statsId, toolt
         if (!dates.length) return;
 
         const ROWS = 5;
-        const COLS = 73;
-        const startDate = new Date(dates[0].date);
-        startDate.setHours(0, 0, 0, 0);
+        const totalCols = Math.ceil(dates.length / ROWS);
 
-        const cellWidth = 12;
-        const gap = 3;
-        const columnWidth = cellWidth + gap;
-        const font = getComputedStyle(document.querySelector('.month-labels')).font;
-
-        let prevCol = null;
-        let prevTextWidth = 0;
-
-        dates.forEach(d => {
+        dates.forEach((d, idx) => {
             const date = new Date(d.date);
-            date.setHours(0, 0, 0, 0);
             if (date.getDate() !== 1) return;
 
-            const dayOffset = Math.floor((date - startDate) / (1000 * 60 * 60 * 24));
-            const colIndex = Math.floor(dayOffset / ROWS);
-            if (colIndex < 0 || colIndex >= COLS) return;
-
-            const monthText = date.toLocaleDateString('en-US', { month: 'short' });
-            const textWidth = getTextWidth(monthText, font);
+            const colIndex = Math.floor(idx / ROWS);
+            if (colIndex < 0 || colIndex >= totalCols) return;
 
             const label = document.createElement('span');
             label.className = 'month-label';
-            label.textContent = monthText;
-            label.style.width = 'max-content';
+            label.textContent = date.toLocaleDateString('en-US', { month: 'short' });
 
-            if (prevCol === null) {
-                label.style.paddingLeft = `${colIndex * columnWidth}px`;
-            } else {
-                const deltaCols = colIndex - prevCol;
-                const deltaPx = deltaCols * columnWidth - prevTextWidth;
-                label.style.paddingLeft = `${deltaPx}px`;
-            }
+            const leftPct = (colIndex / totalCols) * 100;
+            label.style.left = `calc(3px + ${leftPct}%`;
 
             container.appendChild(label);
-            prevCol = colIndex;
-            prevTextWidth = textWidth;
         });
     }
 }

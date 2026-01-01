@@ -10,25 +10,23 @@ html, body {
 }
 
 .scaling-wrapper {
-    transform: scale(1.5);
-    transform-origin: center center;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 100%;
-    height: 100%;
+    width: inherit;
+    height: inherit;
 }
 
 .person-section {
     display: flex;
     flex-direction: column;
-    width: min-content;
+    width: 70%;
+    height: auto;
+    aspect-ratio: 16 / 9;
     align-items: center;
     border-radius: 12px;
     padding: 24px;
-    box-sizing: border-box;
-    overflow: hidden;
 }
 
 #adi-section {
@@ -74,8 +72,9 @@ html, body {
 
 .heatmap-content {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     width: 100%;
+    flex-grow: 1;
     gap: 16px;
     justify-content: center;
 }
@@ -84,26 +83,22 @@ html, body {
     display: flex;
     flex-direction: column;
     flex: 1 1 100%;
-    max-width: 100%;
-}
-
-.heatmap-wrapper {
     width: 100%;
-    display: flex;
-    justify-content: center;
 }
 
 .heatmap-grid {
     display: grid;
-    grid-template-rows: repeat(5, 12px);
+    width: inherit;
+    flex-grow: 1;
+    grid-template-rows: repeat(5, 14.6%);
     grid-auto-flow: column;
     gap: 3px;
-    width: fit-content;
 }
 
 .heatmap-cell {
-    width: 12px;
-    height: 12px;
+    height: 100%;
+    width: auto;
+    aspect-ratio: 1;
     border-radius: 2px;
     background-color: rgba(255, 255, 255, 0.05);
     cursor: pointer;
@@ -129,17 +124,16 @@ html, body {
 #aashima-heatmap-container .heatmap-cell.level-4 { background-color: rgba(255, 77, 77, 1); }
 
 .month-labels {
+    position: relative;
     font-size: 10px;
+    width: 100%;
     color: #9ca3af;
     height: 20px;
-    overflow: visible;
-    white-space: nowrap;
     margin-top: 12px;
 }
 
 .month-label {
-    display: inline-block;
-    white-space: nowrap;
+    position: absolute;
 }
 
 .tooltip {
