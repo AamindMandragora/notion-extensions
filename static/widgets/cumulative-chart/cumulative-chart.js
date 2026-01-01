@@ -47,6 +47,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     options: {
       maintainAspectRatio: false,
       responsive: true,
+      layout: {
+        padding: {
+          top: 10,
+          bottom: 0,
+          left: 10,
+          right: 15
+        }
+      },
       interaction: {
         intersect: false,
         mode: 'index'
@@ -57,28 +65,38 @@ document.addEventListener("DOMContentLoaded", async () => {
           text: 'Cumulative Progress',
           font: {
             family: "'PT Serif', serif",
-            size: 24,
-            weight: '600'
+            size: (ctx) => {
+              const width = ctx.chart.width;
+              return width < 400 ? 16 : 22;
+            },
+            weight: '700'
           },
-          color: '#f3f4f6',
-          padding: { top: 24, bottom: 24 }
+          color: '#ffffff',
+          padding: { top: 10, bottom: 20 }
         },
         legend: {
           display: true,
           position: 'bottom',
           labels: {
-            padding: 16,
+            padding: 15,
             usePointStyle: true,
             pointStyle: 'circle',
-            font: { size: 16 }
+            font: {
+              size: (ctx) => {
+                const width = ctx.chart.width;
+                return width < 400 ? 11 : 13;
+              }
+            }
           }
         },
         tooltip: {
-          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          backgroundColor: 'rgba(20, 20, 20, 0.95)',
           padding: 12,
           cornerRadius: 8,
-          titleFont: { size: 16, weight: '600' },
-          bodyFont: { size: 16 }
+          titleFont: { size: 14, weight: '700' },
+          bodyFont: { size: 13 },
+          borderColor: 'rgba(255, 255, 255, 0.1)',
+          borderWidth: 1
         }
       },
       scales: {
@@ -87,11 +105,19 @@ document.addEventListener("DOMContentLoaded", async () => {
             display: false
           },
           ticks: {
-            color: '#9ca3af',
-            font: { size: 12 }
+            color: '#888',
+            font: {
+              size: (ctx) => {
+                const width = ctx.chart.width;
+                return width < 400 ? 10 : 11;
+              }
+            },
+            maxRotation: 0,
+            autoSkip: true,
+            maxTicksLimit: 7
           },
           border: {
-            color: 'rgba(255, 255, 255, 0.1)'
+            display: false
           }
         },
         y: {
@@ -101,8 +127,13 @@ document.addEventListener("DOMContentLoaded", async () => {
             lineWidth: 1
           },
           ticks: {
-            color: '#9ca3af',
-            font: { size: 12 },
+            color: '#888',
+            font: {
+              size: (ctx) => {
+                const width = ctx.chart.width;
+                return width < 400 ? 10 : 11;
+              }
+            },
             padding: 8
           },
           border: {

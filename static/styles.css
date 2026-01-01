@@ -14,6 +14,12 @@ body {
   min-height: 100vh;
 }
 
+body.widget-page {
+  padding: 0;
+  overflow: hidden;
+  background: transparent;
+}
+
 h1 {
   text-align: center;
   font-size: 32px;
@@ -51,24 +57,31 @@ h1 {
   height: inherit;
 }
 
-.grid>div>iframe {
+.grid div iframe {
   width: 100%;
-  height: auto;
-  aspect-ratio: 4 / 3;
+  height: 450px;
   border: none;
-  zoom: 0.8;
+  background: #1e1e1e;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  display: block;
 }
 
 .chart-container {
-  width: inherit;
-  min-height: calc(100vh - 80px);
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  padding: 20px;
+  width: 100%;
+  height: 100vh;
+  background: #1e1e1e;
+  padding: 16px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: stretch;
+  justify-content: center;
+}
+
+body.widget-page .chart-container {
+  background: #1e1e1e;
+  border: none;
+  border-radius: 0;
 }
 
 canvas {
@@ -76,11 +89,8 @@ canvas {
   height: inherit;
 }
 
-@media (min-aspect-ratio: 4/3) {
+@media (min-width: 1024px) {
   .grid {
     grid-template-columns: repeat(2, 1fr);
-  }
-  .grid>div>iframe {
-    zoom: 0.47;
   }
 }
