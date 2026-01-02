@@ -1,0 +1,19 @@
+{
+  "functions": {
+    "app.py": {
+      "runtime": "python3.11"
+    }
+  },
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "app.py"
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron/update_habits",
+      "schedule": "0 6 * * *"
+    }
+  ]
+}

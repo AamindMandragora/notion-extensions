@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 from notion_client import Client
 from collections import defaultdict
-from datetime import datetime, timezone
+from datetime import datetime, date, timezone
 
 load_dotenv()
 
@@ -60,6 +60,7 @@ TASK_DATABASES = {
         },
     },
 }
+HABITS_SOURCE = os.getenv("HABITS_SOURCE")
 
 def parse_notion_date(date_str):
     dt = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
@@ -121,5 +122,51 @@ def winter_break_tasks():
     adi_tasks = fetch_tasks("adi", "winter_break")
     return [aashima_tasks, adi_tasks]
 
+def read_habits_today():
+    today = date.today().isoformat()
+
+    result = {
+        "date": today,
+        "adi": 0,
+        "aashima": 0,
+    }
+
+    query = notion.data_sources.query(data_source_id=HABITS_SOURCE)
+    pages = query["results"]
+
+    for page in pages:
+        props = page["properties"]
+        try:
+            name = props["Name"]["title"][0]["plain_text"]
+            total = props["Total"]["formula"]["number"]
+        except (KeyError, IndexError, TypeError):
+            continue
+
+        if name.lower() == "adi":
+            result["adi"] = total
+        elif name.lower() == "aashima":
+            result["aashima"] = total
+
+    return result
+
+def uncheck_all_habits():
+    query = notion.data_sources.query(data_source_id=HABITS_SOURCE)
+    pages = query["results"]
+
+    for page in pages:
+        page_id = page["id"]
+        props = page["properties"]
+
+        updates = {}
+        for prop_name, prop_val in props.items():
+            if prop_val["type"] == "checkbox":
+                updates[prop_name] = {"checkbox": False}
+
+        if not updates:
+            continue
+
+        notion.pages.update(page_id=page_id, properties=updates)
+
 if __name__ == "__main__":
-    print(winter_break_tasks())
+    print(read_habits_today())
+    uncheck_all_habits()

@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify, send_from_directory
 from notion import *
 from datetime import datetime, timedelta
-import time
 import redis
 import json
 import os
@@ -104,7 +103,17 @@ def heatmap():
     set_cached("heatmap", data["heatmap"])
     return jsonify(data["heatmap"])
 
-@app.route("/notion-webhook", methods=["POST"])
+@app.route("/api/habits")
+def habits():
+    cached = get_cached("habits")
+    if cached:
+        return jsonify(cached)
+    
+    data = []
+    set_cached("habits", data)
+    return jsonify(data)
+
+@app.route("/api/notion_webhook", methods=["POST"])
 def recieve_webhook():
     print("Someone edited the page!")
     print(request.get_json())
@@ -113,6 +122,22 @@ def recieve_webhook():
     set_cached("winter_break", data["winter_break"])
     set_cached("heatmap", data["heatmap"])
     return "Successful redis update!", 200
+
+@app.route("/api/cron/update_habits")
+def update_habits():
+    try:
+        today_data = read_habits_today()
+        yesterday = (date.today() - timedelta(days=1)).isoformat()
+        today_data["date"] = yesterday
+        data = get_cached("habits") or []
+        if not data or data[-1]["date"] != today_data["date"]:
+            data.append(today_data)
+            set_cached("habits", data)
+        uncheck_all_habits()
+
+        return jsonify({"success": True, "added": today_data})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)})
 
 if __name__ == "__main__":
     app.run(debug=True)
