@@ -16,6 +16,8 @@ export async function renderHeatmap({ person, dates, containerId, statsId, toolt
     segments.forEach(chunk => {
         const segmentWrapper = document.createElement('div');
         segmentWrapper.className = 'segment-wrapper';
+        const cols = Math.ceil(chunk.length / 5);
+        segmentWrapper.style.setProperty('--cols', cols);
         container.appendChild(segmentWrapper);
 
         const monthLabels = document.createElement('div');
@@ -69,8 +71,23 @@ export async function renderHeatmap({ person, dates, containerId, statsId, toolt
     }
 
     function updateTooltipPosition(e, tooltip) {
-        tooltip.style.left = `${e.clientX + 10}px`;
-        tooltip.style.top = `${e.clientY + 10}px`;
+        const gap = 15;
+        const tooltipWidth = tooltip.offsetWidth;
+        const tooltipHeight = tooltip.offsetHeight;
+
+        let left = e.clientX + gap;
+        let top = e.clientY + gap;
+
+        if (left + tooltipWidth > window.innerWidth) {
+            left = e.clientX - tooltipWidth - gap;
+        }
+
+        if (top + tooltipHeight > window.innerHeight) {
+            top = e.clientY - tooltipHeight - gap;
+        }
+
+        tooltip.style.left = `${left}px`;
+        tooltip.style.top = `${top}px`;
     }
 
     function getTextWidth(text, font) {
