@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
     width: 100%;
     height: 100%;
     margin: 0;
@@ -14,19 +15,20 @@ html, body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: inherit;
-    height: inherit;
+    width: 100%;
+    height: 100%;
 }
 
 .person-section {
     display: flex;
     flex-direction: column;
-    width: 70%;
-    height: auto;
-    aspect-ratio: 16 / 9;
+    width: 90%;
+    height: 90%;
     align-items: center;
-    border-radius: 12px;
+    justify-content: center;
     padding: 24px;
+    box-sizing: border-box;
+    border-radius: 12px;
 }
 
 #adi-section {
@@ -40,16 +42,17 @@ html, body {
 }
 
 .person-section h2 {
-    margin-bottom: 16px;
-    font-size: 18px;
-    font-weight: 600;
+    margin: 0 0 16px 0;
+    font-size: 1.4rem;
+    font-weight: 700;
 }
 
 .stats {
     display: flex;
-    gap: 24px;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
+    gap: 32px;
+    margin-bottom: 24px;
+    flex-wrap: nowrap;
+    justify-content: center;
 }
 
 .stat-item {
@@ -60,44 +63,44 @@ html, body {
 }
 
 .stat-label {
-    font-size: 10px;
+    font-size: 11px;
     text-transform: uppercase;
     color: #9ca3af;
+    letter-spacing: 0.5px;
 }
 
 .stat-value {
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 1.2rem;
+    font-weight: 700;
 }
 
 .heatmap-content {
     display: flex;
     flex-direction: column;
     width: 100%;
-    flex-grow: 1;
-    gap: 16px;
+    gap: 32px;
     justify-content: center;
+    align-items: center;
 }
 
 .segment-wrapper {
     display: flex;
     flex-direction: column;
-    flex: 1 1 100%;
     width: 100%;
+    max-width: 600px;
 }
 
 .heatmap-grid {
     display: grid;
-    width: inherit;
-    flex-grow: 1;
-    grid-template-rows: repeat(5, 14.6%);
+    width: 100%;
+    grid-template-columns: repeat(var(--cols), 1fr);
+    grid-template-rows: repeat(5, 1fr);
     grid-auto-flow: column;
     gap: 3px;
 }
 
 .heatmap-cell {
-    height: 100%;
-    width: auto;
+    width: 100%;
     aspect-ratio: 1;
     border-radius: 2px;
     background-color: rgba(255, 255, 255, 0.05);
@@ -106,58 +109,113 @@ html, body {
 }
 
 .heatmap-cell:hover {
-    transform: scale(1.2);
-    outline: 2px solid rgba(255, 255, 255, 0.4);
+    transform: scale(1.3);
+    outline: 2px solid rgba(255, 255, 255, 0.5);
     z-index: 10;
 }
 
-#adi-heatmap-container .heatmap-cell.level-0 { background-color: rgba(255, 255, 255, 0.04); }
-#adi-heatmap-container .heatmap-cell.level-1 { background-color: rgba(255, 255, 255, 0.25); }
-#adi-heatmap-container .heatmap-cell.level-2 { background-color: rgba(255, 255, 255, 0.5); }
-#adi-heatmap-container .heatmap-cell.level-3 { background-color: rgba(255, 255, 255, 0.75); }
-#adi-heatmap-container .heatmap-cell.level-4 { background-color: rgba(255, 255, 255, 0.95); }
+#adi-heatmap-container .heatmap-cell.level-0 {
+    background-color: rgba(255, 255, 255, 0.04);
+}
 
-#aashima-heatmap-container .heatmap-cell.level-0 { background-color: rgba(255, 77, 77, 0.05); }
-#aashima-heatmap-container .heatmap-cell.level-1 { background-color: rgba(255, 77, 77, 0.3); }
-#aashima-heatmap-container .heatmap-cell.level-2 { background-color: rgba(255, 77, 77, 0.55); }
-#aashima-heatmap-container .heatmap-cell.level-3 { background-color: rgba(255, 77, 77, 0.8); }
-#aashima-heatmap-container .heatmap-cell.level-4 { background-color: rgba(255, 77, 77, 1); }
+#adi-heatmap-container .heatmap-cell.level-1 {
+    background-color: rgba(255, 255, 255, 0.25);
+}
+
+#adi-heatmap-container .heatmap-cell.level-2 {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+#adi-heatmap-container .heatmap-cell.level-3 {
+    background-color: rgba(255, 255, 255, 0.75);
+}
+
+#adi-heatmap-container .heatmap-cell.level-4 {
+    background-color: rgba(255, 255, 255, 0.95);
+}
+
+#aashima-heatmap-container .heatmap-cell.level-0 {
+    background-color: rgba(255, 77, 77, 0.05);
+}
+
+#aashima-heatmap-container .heatmap-cell.level-1 {
+    background-color: rgba(255, 77, 77, 0.3);
+}
+
+#aashima-heatmap-container .heatmap-cell.level-2 {
+    background-color: rgba(255, 77, 77, 0.55);
+}
+
+#aashima-heatmap-container .heatmap-cell.level-3 {
+    background-color: rgba(255, 77, 77, 0.8);
+}
+
+#aashima-heatmap-container .heatmap-cell.level-4 {
+    background-color: rgba(255, 77, 77, 1);
+}
 
 .month-labels {
     position: relative;
     font-size: 10px;
     width: 100%;
     color: #9ca3af;
-    height: 20px;
-    margin-top: 12px;
+    height: 18px;
+    margin-bottom: 4px;
 }
 
 .month-label {
     position: absolute;
+    transform: translateX(-50%);
 }
 
 .tooltip {
     position: fixed;
-    background: rgba(0,0,0,0.9);
+    background: rgba(0, 0, 0, 0.95);
     color: white;
-    padding: 6px 10px;
+    padding: 8px 12px;
     border-radius: 6px;
-    font-size: 11px;
+    font-size: 12px;
     pointer-events: none;
     z-index: 1000;
     display: none;
     white-space: nowrap;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-@media (min-aspect-ratio: 16/9) {
+@media (min-width: 1000px) {
+    .heatmap-content {
+        flex-direction: row;
+        align-items: flex-end;
+        gap: 24px;
+        width: 95%;
+    }
+
     .segment-wrapper {
-        flex: 1 1 45%;
+        flex: 1;
     }
 }
 
 @media (max-width: 600px) {
-    .heatmap-cell {
-        width: 10px;
-        height: 10px;
+    body {
+        padding: 0;
+    }
+
+    .person-section {
+        width: 100%;
+        height: 100%;
+        padding: 12px;
+    }
+
+    .stats {
+        gap: 16px;
+        margin-bottom: 16px;
+    }
+
+    .stat-value {
+        font-size: 1.1rem;
+    }
+
+    .heatmap-content {
+        gap: 16px;
     }
 }
