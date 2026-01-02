@@ -16,6 +16,8 @@ export async function renderHeatmap({ person, dates, containerId, statsId, toolt
     segments.forEach(chunk => {
         const segmentWrapper = document.createElement('div');
         segmentWrapper.className = 'segment-wrapper';
+        const cols = Math.ceil(chunk.length / 5);
+        segmentWrapper.style.setProperty('--cols', cols);
         container.appendChild(segmentWrapper);
 
         const monthLabels = document.createElement('div');
