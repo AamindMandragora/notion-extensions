@@ -40,16 +40,8 @@ TASK_DATABASES = {
                         "status": {"equals": "Done"},
                     },
                     {
-                        "or": [
-                            {
-                                "property": "date due",
-                                "date": {"after": "2025-12-16"},
-                            },
-                            {
-                                "property": "date estimated",
-                                "date": {"after": "2025-12-16"},
-                            },
-                        ]
+                        "property": "date estimated",
+                        "date": {"after": "2025-12-16"},
                     },
                 ]
             },
@@ -74,8 +66,7 @@ def aggregate_daily(person, tasks):
             if person == "adi":
                 date_str = task["properties"]["Scheduled Date"]["date"]["start"]
             else:
-                date_obj = task["properties"]["date estimated"]["date"] \
-                           or task["properties"]["date due"]["date"]
+                date_obj = task["properties"]["date estimated"]["date"]
                 date_str = date_obj["start"]
 
             date = parse_notion_date(date_str)
