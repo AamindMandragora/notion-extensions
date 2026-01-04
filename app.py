@@ -113,7 +113,7 @@ def habits():
     set_cached("habits", data)
     return jsonify(data)
 
-@app.route("/api/notion_webhook", methods=["POST"])
+@app.route("/notion-webhook", methods=["POST"])
 def recieve_webhook():
     print("Someone edited the page!")
     print(request.get_json())
