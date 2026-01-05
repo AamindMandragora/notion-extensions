@@ -77,6 +77,24 @@ def get_cached(key):
 def set_cached(key, value):
     redis_client.set(key, json.dumps(value))
 
+def build_weekly_habit_consistency():
+    data = get_cached("habits") or []
+    if not data:
+        return []
+
+    TOTAL_HABITS = 5
+    last_7 = data[-7:]
+
+    result = []
+    for d in last_7:
+        result.append({
+            "date": d["date"],
+            "adi": round(d["adi"] / TOTAL_HABITS, 3),
+            "aashima": round(d["aashima"] / TOTAL_HABITS, 3),
+        })
+
+    return result
+
 @app.route("/")
 def index():
     return send_from_directory("static", "index.html")
@@ -103,14 +121,9 @@ def heatmap():
     set_cached("heatmap", data["heatmap"])
     return jsonify(data["heatmap"])
 
-@app.route("/api/habits")
-def habits():
-    cached = get_cached("habits")
-    if cached:
-        return jsonify(cached)
-    
-    data = []
-    set_cached("habits", data)
+@app.route("/api/habits/weekly")
+def weekly_habits():
+    data = build_weekly_habit_consistency()
     return jsonify(data)
 
 @app.route("/notion-webhook", methods=["POST"])
@@ -140,4 +153,5 @@ def update_habits():
         return jsonify({"success": False, "error": str(e)})
 
 if __name__ == "__main__":
+    print(build_weekly_habit_consistency())
     app.run(debug=True)
