@@ -3,4 +3,4 @@ personal notion db widget to map productivity (and bc we're broke and can't affo
 ## progress
 - [x] heatmaps
 - [x] winter break charts
-- [ ] habit tracker
+- [x] habit tracker
