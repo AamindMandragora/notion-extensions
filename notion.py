@@ -24,6 +24,18 @@ TASK_DATABASES = {
                     },
                 ]
             },
+            "summer_2026": {
+                "and": [
+                    {
+                        "property": "Task Type",
+                        "status": {"equals": "Done"},
+                    },
+                    {
+                        "property": "Scheduled Date",
+                        "date": {"after": "2025-06-10"},
+                    },
+                ]
+            },
             "completed": {
                 "property": "Task Type",
                 "status": {"equals": "Done"},
@@ -42,6 +54,18 @@ TASK_DATABASES = {
                     {
                         "property": "date estimated",
                         "date": {"after": "2025-12-16"},
+                    },
+                ]
+            },
+            "summer_2026": {
+                "and": [
+                    {
+                        "property": "status",
+                        "status": {"equals": "Done"},
+                    },
+                    {
+                        "property": "date estimated",
+                        "date": {"after": "2025-06-10"},
                     },
                 ]
             },
@@ -76,14 +100,30 @@ def aggregate_daily(person, tasks):
 
     return daily_counts
 
-def fetch_tasks(person: str, filter_name: str | None = None):
+def heatmap_filter(person: str, after_date: str):
+    if person == "adi":
+        return {
+            "and": [
+                {"property": "Task Type", "status": {"equals": "Done"}},
+                {"property": "Scheduled Date", "date": {"after": after_date}},
+            ]
+        }
+    return {
+        "and": [
+            {"property": "status", "status": {"equals": "Done"}},
+            {"property": "date estimated", "date": {"after": after_date}},
+        ]
+    }
+
+def fetch_tasks(person: str, filter_name: str | None = None, filter_obj=None):
     tasks = []
 
     config = TASK_DATABASES[person]
     db_id = config["db_id"]
-    filter_obj = (
-        config["filters"].get(filter_name) if filter_name else None
-    )
+    if filter_obj is None:
+        filter_obj = (
+            config["filters"].get(filter_name) if filter_name else None
+        )
 
     database = notion.databases.retrieve(database_id=db_id)
 
@@ -111,6 +151,11 @@ def fetch_tasks(person: str, filter_name: str | None = None):
 def winter_break_tasks():
     aashima_tasks = fetch_tasks("aashima", "winter_break")
     adi_tasks = fetch_tasks("adi", "winter_break")
+    return [aashima_tasks, adi_tasks]
+
+def summer_2026_tasks():
+    aashima_tasks = fetch_tasks("aashima", "summer_2026")
+    adi_tasks = fetch_tasks("adi", "summer_2026")
     return [aashima_tasks, adi_tasks]
 
 def read_habits_today():

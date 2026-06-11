@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 import redis
 import json
 import os
+import threading
 
 app = Flask(__name__, static_folder="static")
 
@@ -11,27 +12,40 @@ REDIS_URL = os.getenv("REDIS_URL")
 
 redis_client = redis.from_url(REDIS_URL, decode_responses=True)
 
+def rebuild_cache():
+    data = build_cache_payload()
+    set_cached("summer_2026", data["summer_2026"])
+    set_cached("heatmap", data["heatmap"])
+
+def rebuild_cache_safe():
+    try:
+        rebuild_cache()
+    except Exception as e:
+        print(f"Cache rebuild failed: {e}")
+
 def build_cache_payload():
-    adi_all = fetch_tasks("adi", "completed")
-    aashima_all = fetch_tasks("aashima", "completed")
+    one_year_ago = (datetime.now() - timedelta(days=364)).date()
+    one_year_ago_str = one_year_ago.isoformat()
 
-    adi_winter = fetch_tasks("adi", "winter_break")
-    aashima_winter = fetch_tasks("aashima", "winter_break")
+    adi_all = fetch_tasks("adi", filter_obj=heatmap_filter("adi", one_year_ago_str))
+    aashima_all = fetch_tasks("aashima", filter_obj=heatmap_filter("aashima", one_year_ago_str))
 
-    adi_winter_daily = aggregate_daily("adi", adi_winter)
-    aashima_winter_daily = aggregate_daily("aashima", aashima_winter)
+    adi_summer_2026 = fetch_tasks("adi", "summer_2026")
+    aashima_summer_2026 = fetch_tasks("aashima", "summer_2026")
 
-    all_dates = sorted(set(adi_winter_daily) | set(aashima_winter_daily))
+    adi_summer_2026_daily = aggregate_daily("adi", adi_summer_2026)
+    aashima_summer_2026_daily = aggregate_daily("aashima", aashima_summer_2026)
+
+    all_dates = sorted(set(adi_summer_2026_daily) | set(aashima_summer_2026_daily))
 
     adi_cum, aashima_cum = [], []
     c1 = c2 = 0
     for d in all_dates:
-        c1 += adi_winter_daily.get(d, 0)
-        c2 += aashima_winter_daily.get(d, 0)
+        c1 += adi_summer_2026_daily.get(d, 0)
+        c2 += aashima_summer_2026_daily.get(d, 0)
         adi_cum.append(c1)
         aashima_cum.append(c2)
 
-    one_year_ago = (datetime.now() - timedelta(days=364)).date()
     today = datetime.now().date()
 
     adi_all_daily = aggregate_daily("adi", adi_all)
@@ -49,14 +63,14 @@ def build_cache_payload():
         cur += timedelta(days=1)
 
     return {
-        "winter_break": {
+        "summer_2026": {
             "dates": [datetime.fromisoformat(d).strftime("%b %d") for d in all_dates],
             "adi": {
-                "daily": [adi_winter_daily.get(d, 0) for d in all_dates],
+                "daily": [adi_summer_2026_daily.get(d, 0) for d in all_dates],
                 "cumulative": adi_cum
             },
             "aashima": {
-                "daily": [aashima_winter_daily.get(d, 0) for d in all_dates],
+                "daily": [aashima_summer_2026_daily.get(d, 0) for d in all_dates],
                 "cumulative": aashima_cum
             }
         },
@@ -101,14 +115,12 @@ def index():
 
 @app.route("/api/task_counts")
 def task_counts():
-    cached = get_cached("winter_break")
+    cached = get_cached("summer_2026")
     if cached:
         return jsonify(cached)
 
-    data = build_cache_payload()
-    set_cached("winter_break", data["winter_break"])
-    set_cached("heatmap", data["heatmap"])
-    return jsonify(data["winter_break"])
+    rebuild_cache()
+    return jsonify(get_cached("summer_2026"))
 
 @app.route("/api/heatmap")
 def heatmap():
@@ -116,10 +128,8 @@ def heatmap():
     if cached:
         return jsonify(cached)
 
-    data = build_cache_payload()
-    set_cached("winter_break", data["winter_break"])
-    set_cached("heatmap", data["heatmap"])
-    return jsonify(data["heatmap"])
+    rebuild_cache()
+    return jsonify(get_cached("heatmap"))
 
 @app.route("/api/habits/weekly")
 def weekly_habits():
@@ -128,13 +138,18 @@ def weekly_habits():
 
 @app.route("/notion-webhook", methods=["POST"])
 def recieve_webhook():
-    print("Someone edited the page!")
-    print(request.get_json())
-    print("Rebuilding the cache!")
-    data = build_cache_payload()
-    set_cached("winter_break", data["winter_break"])
-    set_cached("heatmap", data["heatmap"])
-    return "Successful redis update!", 200
+    payload = request.get_json(silent=True) or {}
+
+    if payload.get("verification_token"):
+        return "", 200
+
+    try:
+        redis_client.delete("summer_2026", "heatmap")
+    except Exception as e:
+        print(f"Cache invalidation failed: {e}")
+
+    threading.Thread(target=rebuild_cache_safe, daemon=True).start()
+    return "", 200
 
 @app.route("/api/cron/update_habits")
 def update_habits():
