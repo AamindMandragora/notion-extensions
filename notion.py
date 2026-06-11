@@ -32,7 +32,7 @@ TASK_DATABASES = {
                     },
                     {
                         "property": "Scheduled Date",
-                        "date": {"after": "2025-06-10"},
+                        "date": {"after": "2026-06-10"},
                     },
                 ]
             },
@@ -65,7 +65,7 @@ TASK_DATABASES = {
                     },
                     {
                         "property": "date estimated",
-                        "date": {"after": "2025-06-10"},
+                        "date": {"after": "2026-06-10"},
                     },
                 ]
             },
